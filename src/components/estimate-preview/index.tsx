@@ -16,6 +16,7 @@ export function EstimatePreview() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
 
   useEffect(() => {
     const updateScale = () => {
@@ -54,6 +55,8 @@ export function EstimatePreview() {
 
       printDiv.style.display = "block";
       generatePDF(filename);
+      setShowGuide(true);
+      setTimeout(() => setShowGuide(false), 8000);
 
       // Clean up after print dialog closes
       setTimeout(() => {
@@ -93,6 +96,16 @@ export function EstimatePreview() {
           {isGenerating ? "Generating..." : "Save PDF"}
         </Button>
       </div>
+
+      {/* Print guide banner */}
+      {showGuide && (
+        <div className="bg-indigo-600 text-white text-xs px-4 py-2.5 flex items-center gap-2 shrink-0 animate-in slide-in-from-top-1">
+          <span className="text-lg">📋</span>
+          <span>
+            <strong>In the print dialog:</strong> Set Destination → <strong>Save as PDF</strong>, Paper size → <strong>A4</strong>, Margins → <strong>None</strong>, enable <strong>Background graphics</strong>
+          </span>
+        </div>
+      )}
 
       {/* Scroll area */}
       <div
