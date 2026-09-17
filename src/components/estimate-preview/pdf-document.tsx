@@ -27,10 +27,10 @@ export const PDFDocument = forwardRef<HTMLDivElement, PDFDocumentProps>(({ estim
           {/* Logo Approximation */}
           <div className="relative w-20 h-24 bg-[#1e3a8a] rounded-b-full flex flex-col items-center justify-center p-2 text-white shadow-md border-4 border-[#0ea5e9]">
             <div className="grid grid-cols-2 gap-1 mb-1">
-              <Airplay className="w-5 h-5 text-blue-200" />
-              <Droplets className="w-5 h-5 text-blue-200" />
-              <ThermometerSun className="w-5 h-5 text-blue-200" />
-              <WashingMachine className="w-5 h-5 text-blue-200" />
+              <Airplay className="w-5 h-5 text-[#bfdbfe]" />
+              <Droplets className="w-5 h-5 text-[#bfdbfe]" />
+              <ThermometerSun className="w-5 h-5 text-[#bfdbfe]" />
+              <WashingMachine className="w-5 h-5 text-[#bfdbfe]" />
             </div>
             <div className="absolute bottom-0 w-full h-4 bg-[#f97316] rounded-b-full" />
           </div>
@@ -67,7 +67,7 @@ export const PDFDocument = forwardRef<HTMLDivElement, PDFDocumentProps>(({ estim
           <div className="flex flex-col items-center gap-1.5"><div className="border rounded p-1 shadow-sm"><ThermometerSun className="w-6 h-6 text-[#475569]" /></div><span>Geyser</span></div>
           <div className="flex flex-col items-center gap-1.5 text-center w-20 leading-tight"><div className="border rounded p-1 shadow-sm"><WashingMachine className="w-6 h-6 text-[#475569]" /></div><span>Washing Machine</span></div>
         </div>
-        <div className="bg-[#0ea5e9] text-white py-2.5 px-8 text-sm absolute right-0 w-[350px] shadow-md" style={{ clipPath: 'polygon(10% 0, 100% 0, 100% 100%, 0% 100%)' }}>
+        <div className="bg-[#0ea5e9] text-white py-2.5 px-8 text-sm absolute right-0 w-[350px] shadow-md rounded-l-3xl">
           <div className="pl-6 font-serif italic font-medium" style={{ fontFamily: '"Brush Script MT", "Comic Sans MS", cursive', fontSize: '1.1rem' }}>
             All Your Home Service Solutions<br/><span className="pl-4">Under One Roof</span>
           </div>
@@ -228,19 +228,19 @@ export const PDFDocument = forwardRef<HTMLDivElement, PDFDocumentProps>(({ estim
       {/* FOOTER */}
       <div className="bg-[#1e3a8a] text-white p-3 flex justify-between items-center mt-auto shrink-0 relative overflow-hidden">
         {/* Subtle background glow effect on right */}
-        <div className="absolute right-0 top-0 w-64 h-full bg-[#0ea5e9]/20 blur-xl pointer-events-none" />
+        <div className="absolute right-0 top-0 w-64 h-full bg-[#0ea5e9] opacity-10 pointer-events-none" />
         
         <div className="flex gap-4 text-[9px] font-bold tracking-wider leading-tight">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-7 h-7" /> RELIABLE<br/>SERVICE
           </div>
-          <div className="flex items-center gap-2 border-l border-[#3b82f6]/30 pl-4">
+          <div className="flex items-center gap-2 border-l border-[#3b82f64d] pl-4">
             <Users className="w-7 h-7" /> EXPERT<br/>TECHNICIANS
           </div>
-          <div className="flex items-center gap-2 border-l border-[#3b82f6]/30 pl-4">
+          <div className="flex items-center gap-2 border-l border-[#3b82f64d] pl-4">
             <ThumbsUp className="w-7 h-7" /> QUALITY<br/>WORK
           </div>
-          <div className="flex items-center gap-2 border-l border-[#3b82f6]/30 pl-4">
+          <div className="flex items-center gap-2 border-l border-[#3b82f64d] pl-4">
             <CheckCircle className="w-7 h-7" /> CUSTOMER<br/>SATISFACTION
           </div>
         </div>
