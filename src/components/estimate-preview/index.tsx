@@ -7,30 +7,33 @@ import { Button } from "@/components/ui/button";
 import { Download, Loader2 } from "lucide-react";
 import { generatePDF } from "@/lib/pdf";
 
+const A4_WIDTH_PX = 794;
+const A4_HEIGHT_PX = 1123; // 297mm at 96dpi
+
 export function EstimatePreview() {
   const { estimate } = useEstimateStore();
   const pdfRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // Responsive scaling logic for the A4 document
   useEffect(() => {
     const updateScale = () => {
       if (!containerRef.current) return;
       const containerWidth = containerRef.current.clientWidth;
-      const a4WidthPx = 794;
-      const padding = 32;
-      const availableWidth = containerWidth - padding;
-      const newScale = Math.min(availableWidth / a4WidthPx, 1);
+      // Use full container width with minimal padding
+      const availableWidth = containerWidth - 16;
+      const newScale = Math.min(availableWidth / A4_WIDTH_PX, 1);
       setScale(newScale);
     };
 
     updateScale();
-    setTimeout(updateScale, 50);
+    const timer = setTimeout(updateScale, 100);
     window.addEventListener("resize", updateScale);
-    return () => window.removeEventListener("resize", updateScale);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", updateScale);
+    };
   }, [estimate.items.length]);
 
   const handleDownloadPDF = useCallback(async () => {
@@ -43,7 +46,6 @@ export function EstimatePreview() {
       printDiv.style.display = "none";
       document.body.appendChild(printDiv);
 
-      // We need to render the React component into it — use the cloned DOM from our ref
       if (pdfRef.current) {
         const clone = pdfRef.current.cloneNode(true) as HTMLElement;
         clone.style.transform = "none";
@@ -58,7 +60,7 @@ export function EstimatePreview() {
         if (document.body.contains(printDiv)) {
           document.body.removeChild(printDiv);
         }
-      }, 2000);
+      }, 3000);
     } finally {
       setIsGenerating(false);
     }
@@ -69,6 +71,10 @@ export function EstimatePreview() {
     document.addEventListener("download-pdf", onDownloadEvent);
     return () => document.removeEventListener("download-pdf", onDownloadEvent);
   }, [handleDownloadPDF]);
+
+  // The visual (scaled) dimensions of the A4 sheet
+  const scaledWidth = A4_WIDTH_PX * scale;
+  const scaledHeight = A4_HEIGHT_PX * scale;
 
   return (
     <div className="flex flex-col h-full bg-white/40 backdrop-blur-xl rounded-2xl overflow-hidden shadow-xl border border-white/50 relative">
@@ -88,20 +94,37 @@ export function EstimatePreview() {
         </Button>
       </div>
 
+      {/* Scroll area */}
       <div
         ref={containerRef}
-        className="flex-1 overflow-auto bg-zinc-100/50 p-4 flex justify-center items-start"
+        className="flex-1 overflow-auto bg-zinc-100/50 p-2"
       >
+        {/*
+          Key trick: give this container explicit scaled dimensions so the
+          scroll area knows exactly how big the content is. The inner div
+          uses transform:scale() anchored to top-left, then we nudge it
+          with margin to center horizontally.
+        */}
         <div
-          ref={wrapperRef}
-          className="origin-top flex justify-center pb-8"
           style={{
-            transform: `scale(${scale})`,
-            transformOrigin: "top center",
-            transition: "transform 0.15s ease-out",
+            width: scaledWidth,
+            height: scaledHeight,
+            margin: "0 auto",
+            position: "relative",
           }}
         >
-          <PDFDocument ref={pdfRef} estimate={estimate} />
+          <div
+            style={{
+              transform: `scale(${scale})`,
+              transformOrigin: "top left",
+              width: A4_WIDTH_PX,
+              position: "absolute",
+              top: 0,
+              left: 0,
+            }}
+          >
+            <PDFDocument ref={pdfRef} estimate={estimate} />
+          </div>
         </div>
       </div>
     </div>
