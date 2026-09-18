@@ -77,7 +77,9 @@ export function ItemTableEditor() {
                 </td>
                 <td className="px-4 py-3">
                   <Input 
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     value={item.quantity === null ? "" : item.quantity} 
                     onChange={(e) => handleItemChange(item.id, "quantity", e.target.value)}
                     placeholder="0"
@@ -86,7 +88,8 @@ export function ItemTableEditor() {
                 </td>
                 <td className="px-4 py-3">
                   <Input 
-                    type="number"
+                    type="text"
+                    inputMode="decimal"
                     value={item.rate === null ? "" : item.rate} 
                     onChange={(e) => handleItemChange(item.id, "rate", e.target.value)}
                     placeholder="0"
@@ -141,7 +144,9 @@ export function ItemTableEditor() {
               <div className="space-y-1.5">
                 <Label>Quantity</Label>
                 <Input 
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   value={item.quantity === null ? "" : item.quantity} 
                   onChange={(e) => handleItemChange(item.id, "quantity", e.target.value)}
                   placeholder="0"
@@ -150,7 +155,8 @@ export function ItemTableEditor() {
               <div className="space-y-1.5">
                 <Label>Rate</Label>
                 <Input 
-                  type="number"
+                  type="text"
+                  inputMode="decimal"
                   value={item.rate === null ? "" : item.rate} 
                   onChange={(e) => handleItemChange(item.id, "rate", e.target.value)}
                   placeholder="0"
