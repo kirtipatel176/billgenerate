@@ -58,7 +58,6 @@ export function ItemTableEditor() {
               <th className="font-semibold px-4 py-3 text-left w-12">#</th>
               <th className="font-semibold px-4 py-3 text-left">Description</th>
               <th className="font-semibold px-4 py-3 text-left w-24">Qty</th>
-              <th className="font-semibold px-4 py-3 text-left w-24">Unit</th>
               <th className="font-semibold px-4 py-3 text-left w-32">Rate</th>
               <th className="font-semibold px-4 py-3 text-right w-32">Amount</th>
               <th className="font-semibold px-4 py-3 text-center w-16"></th>
@@ -82,14 +81,6 @@ export function ItemTableEditor() {
                     value={item.quantity === null ? "" : item.quantity} 
                     onChange={(e) => handleItemChange(item.id, "quantity", e.target.value)}
                     placeholder="0"
-                    className="border-0 shadow-none focus-visible:ring-1 bg-transparent px-2"
-                  />
-                </td>
-                <td className="px-4 py-3">
-                  <Input 
-                    value={item.unit} 
-                    onChange={(e) => handleItemChange(item.id, "unit", e.target.value)}
-                    placeholder="e.g. ft"
                     className="border-0 shadow-none focus-visible:ring-1 bg-transparent px-2"
                   />
                 </td>
@@ -154,14 +145,6 @@ export function ItemTableEditor() {
                   value={item.quantity === null ? "" : item.quantity} 
                   onChange={(e) => handleItemChange(item.id, "quantity", e.target.value)}
                   placeholder="0"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Unit</Label>
-                <Input 
-                  value={item.unit} 
-                  onChange={(e) => handleItemChange(item.id, "unit", e.target.value)}
-                  placeholder="e.g. ft"
                 />
               </div>
               <div className="space-y-1.5">

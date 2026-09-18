@@ -143,6 +143,7 @@ export const PDFDocument = forwardRef<HTMLDivElement, PDFDocumentProps>(({ estim
               <tr>
                 <th className="py-2 px-2 text-center font-bold border-r border-[#cbd5e1] w-12">Sr. No.</th>
                 <th className="py-2 px-4 text-left font-bold border-r border-[#cbd5e1]">Item Name / Description</th>
+                <th className="py-2 px-2 text-center font-bold border-r border-[#cbd5e1] w-20">Qty</th>
                 <th className="py-2 px-2 text-center font-bold border-r border-[#cbd5e1] w-28">Rate (₹)</th>
                 <th className="py-2 px-2 text-center font-bold w-32">Amount (₹)</th>
               </tr>
@@ -152,6 +153,7 @@ export const PDFDocument = forwardRef<HTMLDivElement, PDFDocumentProps>(({ estim
                 <tr key={item.id} className="min-h-[32px]">
                   <td className="py-1.5 px-2 text-center font-medium border-r border-[#cbd5e1]">{index + 1}</td>
                   <td className="py-1.5 px-4 border-r border-[#cbd5e1] font-medium">{item.description}</td>
+                  <td className="py-1.5 px-2 text-center border-r border-[#cbd5e1] font-medium">{item.quantity ?? ""}</td>
                   <td className="py-1.5 px-2 text-right border-r border-[#cbd5e1] font-medium">{item.rate}</td>
                   <td className="py-1.5 px-2 text-right font-medium">{item.amount > 0 ? item.amount : ""}</td>
                 </tr>
