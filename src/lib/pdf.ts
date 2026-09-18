@@ -2,129 +2,134 @@ import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
 /**
- * Recursively walk every element in a tree and replace any oklch / lab / lch
- * color values in computed styles with their computed sRGB equivalents.
- * This makes html2canvas work correctly with Tailwind v4 on all browsers.
+ * Walk every element and inline computed rgb() colors so html2canvas
+ * doesn't choke on oklch/lab values used by Tailwind v4.
  */
-function resolveOklchColors(root: HTMLElement) {
-  const elements = root.querySelectorAll("*");
-  const allEls: Element[] = [root, ...Array.from(elements)];
-
-  const colorProps = [
-    "color",
-    "backgroundColor",
-    "borderTopColor",
-    "borderBottomColor",
-    "borderLeftColor",
-    "borderRightColor",
-    "outlineColor",
-    "fill",
-    "stroke",
+function inlineColors(root: HTMLElement) {
+  const props = [
+    "color", "backgroundColor",
+    "borderTopColor", "borderBottomColor",
+    "borderLeftColor", "borderRightColor",
   ] as const;
 
-  allEls.forEach((el) => {
-    if (!(el instanceof HTMLElement) && !(el instanceof SVGElement)) return;
-    const computed = window.getComputedStyle(el);
-
-    colorProps.forEach((prop) => {
-      const val = computed[prop as keyof CSSStyleDeclaration] as string;
-      if (!val) return;
-      // If the browser already resolved it to rgb/rgba we can use it directly.
-      // Only patch if it still contains oklch/lab/lch (older Safari).
-      if (
-        val.includes("oklch") ||
-        val.includes("lab(") ||
-        val.includes("lch(")
-      ) {
-        // Fallback: set transparent so at least it won't crash the renderer
-        (el as HTMLElement).style[prop as any] = "transparent";
-      } else if (val.startsWith("rgb")) {
-        (el as HTMLElement).style[prop as any] = val;
+  const all = [root, ...Array.from(root.querySelectorAll("*"))];
+  all.forEach((el) => {
+    if (!(el instanceof HTMLElement)) return;
+    const cs = window.getComputedStyle(el);
+    props.forEach((p) => {
+      const v = cs[p];
+      if (v && (v.includes("oklch") || v.includes("lab(") || v.includes("lch("))) {
+        el.style[p] = "transparent";
+      } else if (v && v.startsWith("rgb")) {
+        el.style[p] = v;
       }
     });
   });
 }
 
 export async function generatePDF(element: HTMLElement, filename: string) {
-  // Clone to body so it's fully laid out, unaffected by transforms/overflow
+  const PDF_W_MM = 210;
+  const PDF_H_MM = 297;
+  const A4_PX_W  = 794;  // 210mm @ 96dpi
+
+  // ── 1. Temporarily widen the viewport so iOS Safari renders the full width ──
+  let viewportMeta = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
+  const originalViewport = viewportMeta?.getAttribute("content") ?? "";
+
+  if (!viewportMeta) {
+    viewportMeta = document.createElement("meta");
+    viewportMeta.name = "viewport";
+    document.head.appendChild(viewportMeta);
+  }
+  viewportMeta.setAttribute("content", `width=${A4_PX_W}, initial-scale=1`);
+
+  // Give the browser time to reflow at the new viewport width
+  await new Promise((r) => setTimeout(r, 300));
+
+  // ── 2. Clone onto body at full A4 width ──
   const clone = element.cloneNode(true) as HTMLElement;
   Object.assign(clone.style, {
-    position: "fixed",
-    top: "0",
-    left: "0",
-    zIndex: "-99999",
-    transform: "none",
-    transformOrigin: "top left",
-    width: "794px",      // 210mm at 96dpi
-    minHeight: "1123px", // 297mm at 96dpi
-    background: "white",
+    position:      "fixed",
+    top:           "0",
+    left:          "0",
+    zIndex:        "-99999",
+    transform:     "none",
+    transformOrigin:"top left",
+    width:         `${A4_PX_W}px`,
+    minHeight:     "1123px",
+    background:    "white",
     pointerEvents: "none",
-    visibility: "visible",
-    opacity: "1",
-    overflow: "visible",
+    visibility:    "visible",
+    opacity:       "1",
+    overflow:      "visible",
   });
-
   document.body.appendChild(clone);
 
   try {
-    // Let the browser fully paint the clone (important for Safari)
+    // Wait for fonts/images inside clone to settle
     await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
     await new Promise((r) => setTimeout(r, 400));
 
-    // Patch oklch colors so html2canvas doesn't choke
-    resolveOklchColors(clone);
+    // Patch oklch → rgb so html2canvas renders all colours correctly
+    inlineColors(clone);
+
+    const totalHeight = clone.scrollHeight || 1123;
 
     const canvas = await html2canvas(clone, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      logging: false,
+      scale:       2,
+      useCORS:     true,
+      allowTaint:  true,
+      logging:     false,
       backgroundColor: "#ffffff",
-      width: 794,
-      height: clone.scrollHeight,
-      windowWidth: 794,
-      windowHeight: clone.scrollHeight,
-      scrollX: 0,
-      scrollY: 0,
+      width:       A4_PX_W,
+      height:      totalHeight,
+      windowWidth: A4_PX_W,
+      windowHeight:totalHeight,
+      scrollX:     0,
+      scrollY:     0,
+      x:           0,
+      y:           0,
     });
 
     if (!canvas.width || !canvas.height) {
-      throw new Error(`Canvas is empty (${canvas.width}×${canvas.height})`);
+      throw new Error(`Canvas is empty (${canvas.width}×${canvas.height}). Try again.`);
     }
 
-    // A4 in mm
-    const PDF_W = 210;
-    const PDF_H = 297;
-
-    // How many A4 pages does the content need?
-    const contentHeightMm = (canvas.height / canvas.width) * PDF_W;
-    const pageCount = Math.ceil(contentHeightMm / PDF_H);
-
+    // ── 3. Build a multi-page PDF ──
     const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    const pxPerMm        = canvas.width / PDF_W_MM;          // px per mm in the canvas
+    const pageHeightPx   = PDF_H_MM * pxPerMm;               // canvas rows per A4 page
+    const pageCount      = Math.ceil(canvas.height / pageHeightPx);
 
     for (let page = 0; page < pageCount; page++) {
       if (page > 0) pdf.addPage();
 
-      // Slice the canvas for this page
-      const srcY = (page * PDF_H * canvas.width) / PDF_W;
-      const srcH = (PDF_H * canvas.width) / PDF_W;
+      const srcY = page * pageHeightPx;
+      const srcH = Math.min(pageHeightPx, canvas.height - srcY);
 
-      const pageCanvas = document.createElement("canvas");
-      pageCanvas.width = canvas.width;
-      pageCanvas.height = srcH;
-      const ctx = pageCanvas.getContext("2d")!;
-      ctx.fillStyle = "#ffffff";
+      // Slice this page from the full canvas
+      const pageCanvas    = document.createElement("canvas");
+      pageCanvas.width    = canvas.width;
+      pageCanvas.height   = pageHeightPx;           // always full page height
+      const ctx           = pageCanvas.getContext("2d")!;
+      ctx.fillStyle       = "#ffffff";
       ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
       ctx.drawImage(canvas, 0, srcY, canvas.width, srcH, 0, 0, canvas.width, srcH);
 
-      const imgData = pageCanvas.toDataURL("image/jpeg", 0.95);
-      pdf.addImage(imgData, "JPEG", 0, 0, PDF_W, PDF_H);
+      pdf.addImage(pageCanvas.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, PDF_W_MM, PDF_H_MM);
     }
 
     pdf.save(filename);
+
   } finally {
-    if (document.body.contains(clone)) {
-      document.body.removeChild(clone);
+    // ── 4. Clean up ──
+    if (document.body.contains(clone)) document.body.removeChild(clone);
+
+    // Restore original viewport
+    if (originalViewport) {
+      viewportMeta.setAttribute("content", originalViewport);
+    } else {
+      viewportMeta.setAttribute("content", "width=device-width, initial-scale=1");
     }
   }
 }
