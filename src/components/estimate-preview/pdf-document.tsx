@@ -23,25 +23,35 @@ export const PDFDocument = forwardRef<HTMLDivElement, PDFDocumentProps>(({ estim
       {/* HEADER SECTION */}
       <div className="flex justify-between items-stretch pt-6 pl-8 relative h-[140px]">
         {/* Left Logo Area */}
-        <div className="flex items-center gap-4 z-10 w-2/3">
-          {/* Logo Approximation */}
-          <div className="relative w-20 h-24 bg-[#1e3a8a] rounded-b-full flex flex-col items-center justify-center p-2 text-white shadow-md border-4 border-[#0ea5e9]">
-            <div className="grid grid-cols-2 gap-1 mb-1">
-              <Airplay className="w-5 h-5 text-[#bfdbfe]" />
-              <Droplets className="w-5 h-5 text-[#bfdbfe]" />
-              <ThermometerSun className="w-5 h-5 text-[#bfdbfe]" />
-              <WashingMachine className="w-5 h-5 text-[#bfdbfe]" />
-            </div>
-            <div className="absolute bottom-0 w-full h-4 bg-[#f97316] rounded-b-full" />
-          </div>
-          <div className="flex flex-col justify-center">
-            <h1 className="text-[2.75rem] font-black tracking-tight leading-none mb-1">
-              <span className="text-[#0ea5e9]">Hydro</span><span className="text-[#f97316]">Cool</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "14px", zIndex: 10, width: "58%" }}>
+          {/* Premium SVG Logo Mark */}
+          <svg width="72" height="88" viewBox="0 0 72 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {/* Shield base */}
+            <path d="M36 2L6 14V42C6 60 19 75.5 36 82C53 75.5 66 60 66 42V14L36 2Z" fill="#1e3a8a"/>
+            <path d="M36 2L6 14V42C6 60 19 75.5 36 82C53 75.5 66 60 66 42V14L36 2Z" stroke="#0ea5e9" strokeWidth="2.5"/>
+            {/* Inner shield highlight */}
+            <path d="M36 8L12 18V42C12 57 23 70.5 36 76C49 70.5 60 57 60 42V18L36 8Z" fill="#1e40af"/>
+            {/* Water drop */}
+            <path d="M36 22C36 22 26 34 26 41C26 46.52 30.48 51 36 51C41.52 51 46 46.52 46 41C46 34 36 22 36 22Z" fill="#0ea5e9"/>
+            {/* Snowflake/AC symbol inside drop */}
+            <line x1="36" y1="32" x2="36" y2="48" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+            <line x1="29" y1="36" x2="43" y2="44" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+            <line x1="43" y1="36" x2="29" y2="44" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+            {/* Orange bottom bar */}
+            <rect x="6" y="78" width="60" height="8" rx="4" fill="#f97316"/>
+            {/* Stars on shield */}
+            <circle cx="18" cy="24" r="2" fill="#bfdbfe" fillOpacity="0.6"/>
+            <circle cx="54" cy="24" r="2" fill="#bfdbfe" fillOpacity="0.6"/>
+          </svg>
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <h1 style={{ fontSize: "2.6rem", fontWeight: 900, lineHeight: 1, margin: 0, letterSpacing: "-0.03em", fontFamily: "Arial Black, Arial, sans-serif" }}>
+              <span style={{ color: "#0ea5e9" }}>Hydro</span><span style={{ color: "#f97316" }}>Cool</span>
             </h1>
-            <p className="text-xl font-medium tracking-[0.35em] text-[#1e3a8a] leading-none mb-1">S E R V I C E S</p>
-            <p className="text-sm italic text-[#475569] font-serif">Built on Trust. Driven by Service.</p>
+            <p style={{ fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.38em", color: "#1e3a8a", lineHeight: 1, margin: "4px 0 3px", fontFamily: "Arial, sans-serif" }}>S E R V I C E S</p>
+            <p style={{ fontSize: "0.72rem", fontStyle: "italic", color: "#475569", margin: 0, fontFamily: "Georgia, serif" }}>Built on Trust. Driven by Service.</p>
           </div>
         </div>
+
         
         {/* Right Info Area - Curved Blue Background */}
         <div className="absolute right-0 top-0 h-[170px] w-[350px] bg-[#1e3a8a] text-white rounded-bl-[80px] p-6 z-0 flex flex-col justify-center shadow-lg">
@@ -89,7 +99,7 @@ export const PDFDocument = forwardRef<HTMLDivElement, PDFDocumentProps>(({ estim
             </div>
             <div className="flex p-2">
               <span className="font-bold text-[#1e3a8a] w-28 text-sm">Estimate Date :</span>
-              <span className="text-[#334155] text-sm font-medium">{estimateDetails.estimateDate}</span>
+              <span suppressHydrationWarning className="text-[#334155] text-sm font-medium">{estimateDetails.estimateDate}</span>
             </div>
           </div>
         </div>

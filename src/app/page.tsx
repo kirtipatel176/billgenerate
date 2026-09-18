@@ -14,13 +14,15 @@ import {
 } from "@/components/ui/dialog";
 
 export default function Home() {
-  const { resetEstimate, estimate } = useEstimateStore();
+  const { resetEstimate, estimate, updateEstimateDetails } = useEstimateStore();
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   
+  // Set today's date on client mount if still using the default placeholder
   useEffect(() => {
-    const handleDownload = () => {};
-    document.addEventListener('download-pdf', handleDownload);
-    return () => document.removeEventListener('download-pdf', handleDownload);
+    if (estimate.estimateDetails.estimateDate === "2025-01-01") {
+      updateEstimateDetails({ estimateDate: new Date().toISOString().split("T")[0] });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleNewEstimate = () => {

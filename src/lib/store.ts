@@ -28,7 +28,7 @@ const initialEstimate: Estimate = {
   },
   estimateDetails: {
     estimateNumber: "EST-001",
-    estimateDate: new Date().toISOString().split("T")[0],
+    estimateDate: "2025-01-01",
     validUntil: "",
   },
   items: [],
