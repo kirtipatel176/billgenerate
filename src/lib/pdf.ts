@@ -119,7 +119,28 @@ export async function generatePDF(element: HTMLElement, filename: string) {
       pdf.addImage(pageCanvas.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, PDF_W_MM, PDF_H_MM);
     }
 
-    pdf.save(filename);
+    // ── 4. Save / open PDF ──
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+
+    if (isIOS) {
+      // iOS Safari blocks programmatic file downloads — open in new tab so user can
+      // tap Share → Save to Files / AirDrop / etc.
+      const blob = pdf.output("blob");
+      const url = URL.createObjectURL(blob);
+      const newTab = window.open(url, "_blank");
+      if (!newTab) {
+        // If popup was blocked, fall back to an anchor click
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+      setTimeout(() => URL.revokeObjectURL(url), 30000);
+    } else {
+      pdf.save(filename);
+    }
 
   } finally {
     // ── 4. Clean up ──
