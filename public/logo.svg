@@ -1,0 +1,26 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- White background -->
+  <rect width="512" height="512" rx="80" fill="white"/>
+  <!-- Shield base -->
+  <path d="M256 30L80 110V270C80 380 158 468 256 500C354 468 432 380 432 270V110L256 30Z" fill="#1e3a8a"/>
+  <!-- Shield border -->
+  <path d="M256 30L80 110V270C80 380 158 468 256 500C354 468 432 380 432 270V110L256 30Z" stroke="#0ea5e9" stroke-width="16" fill="none"/>
+  <!-- Inner shield -->
+  <path d="M256 70L112 140V270C112 360 174 436 256 464C338 436 400 360 400 270V140L256 70Z" fill="#1e40af"/>
+  <!-- Water drop -->
+  <path d="M256 160C256 160 196 240 196 285C196 318 223 345 256 345C289 345 316 318 316 285C316 240 256 160 256 160Z" fill="#0ea5e9"/>
+  <!-- Snowflake in drop -->
+  <line x1="256" y1="205" x2="256" y2="330" stroke="white" stroke-width="12" stroke-linecap="round"/>
+  <line x1="210" y1="232" x2="302" y2="290" stroke="white" stroke-width="12" stroke-linecap="round"/>
+  <line x1="302" y1="232" x2="210" y2="290" stroke="white" stroke-width="12" stroke-linecap="round"/>
+  <!-- Snowflake tips -->
+  <line x1="256" y1="205" x2="240" y2="220" stroke="white" stroke-width="8" stroke-linecap="round"/>
+  <line x1="256" y1="205" x2="272" y2="220" stroke="white" stroke-width="8" stroke-linecap="round"/>
+  <line x1="256" y1="330" x2="240" y2="315" stroke="white" stroke-width="8" stroke-linecap="round"/>
+  <line x1="256" y1="330" x2="272" y2="315" stroke="white" stroke-width="8" stroke-linecap="round"/>
+  <!-- Orange bottom accent bar -->
+  <rect x="80" y="468" width="352" height="36" rx="18" fill="#f97316"/>
+  <!-- Stars / shine dots -->
+  <circle cx="140" cy="150" r="12" fill="#bfdbfe" fill-opacity="0.7"/>
+  <circle cx="372" cy="150" r="12" fill="#bfdbfe" fill-opacity="0.7"/>
+</svg>
